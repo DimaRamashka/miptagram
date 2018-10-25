@@ -4,7 +4,7 @@ import Button from '@atlaskit/button';
 import Parse from 'parse'
 import {connect} from 'react-redux';
 import {reminder, onMakeOrder} from './actions/logActions';
-import {orderInfo, goodbye, loading_order} from './actions/photoActions';
+import {orderInfoRem, goodbye, loading_order} from './actions/photoActions';
 import loading from './images/loading.gif';
 
 class OrderInfoPanel extends Component {
@@ -109,6 +109,7 @@ componentDidMount(){
                         let data = {                                  
                                     vk_id: vk_id,
                                     photos: this.props.photos,
+                                    price: this.props.price,
                                     name: document.getElementById("name").value,
                                     hostel: hostel,
                                     room: document.getElementById("room").value,
@@ -150,6 +151,7 @@ componentDidMount(){
                             let data = {                                  
                                         vk_id: vk_id,
                                         photos: this.props.photos,
+                                        price: this.props.price,
                                         name: document.getElementById("name").value,
                                         hostel: hostel,
                                         room: document.getElementById("room").value,
@@ -171,13 +173,11 @@ componentDidMount(){
                                 Parse.Cloud.run('createOrder', {data: data}).then(
                                     (res) => {
                                         
-                                        localStorage.removeItem('miptagramState');
-                                        
-                                        this.props.orderInfo();
+                                        localStorage.removeItem('miptagramState');    
+                                        this.props.orderInfo('hide', this.props.price);
                                         this.props.reminder('Заказ успешно создан');
                                         this.props.goodbye();
                                         this.props.loading_order('none');
-                                        
                                         
                                     }
                                 )} 
@@ -191,7 +191,7 @@ componentDidMount(){
                 
                  </span> :
                 <p> <img src={loading} height='50px'/> </p> }
-                   <span> <Button appearance='danger' onClick={() => {this.props.onBack()}}> Вернуться  </Button> </span>
+                   <span> <Button appearance='danger' onClick={() => {this.props.onBack(this.props.price)}}> Вернуться  </Button> </span>
                 </ForString>
             </InfoBlock>    
         </MainDiv>
@@ -206,21 +206,22 @@ const mapStateToProps = (state) => {
       photoNumber: state.PhotosInfo.photoNumber,
       loading: state.PhotosInfo.loading,
       photoType: state.PhotosInfo.photoType,
-      creating_order: state.PhotosInfo.creating_order
+      creating_order: state.PhotosInfo.creating_order,
+      price: state.order.price
     }
   };
   
 const mapDispatchToProps = (dispatch) => {
     
     return{
-        onBack: () => {
-            dispatch(orderInfo('hide'))
+        onBack: (price) => {
+            dispatch(orderInfoRem('hide'))
       },
       reminder: (message) => {
         dispatch(reminder(message))
       },
-      orderInfo: () =>{
-        dispatch(orderInfo('hide'));
+      orderInfo: (action) =>{
+        dispatch(orderInfoRem(action));
       },
       goodbye: () =>{
         dispatch(goodbye('hide'))

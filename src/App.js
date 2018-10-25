@@ -79,7 +79,7 @@ componentWillUpdate(nextProps, nextState) {
               <RightMenu/>
               
             </ForRight> 
-             
+            
            </Wrapper>
            
       </div>

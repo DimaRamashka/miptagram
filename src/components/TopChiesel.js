@@ -27,10 +27,14 @@ render(){
             <DivForLogInfo >
                  
                  <Button onClick={() => {
-                     window.VK.Auth.login((res) => {
-                        res.session ?
-                        this.props.sendDataForLogin(res.session.user.first_name):
-                        null
+                     window.VK.Auth.login((e) => {
+                        e.session ?
+                        
+                        window.VK.Api.call('users.get', {user_ids: e.session.mid, v:"5.84", fields: 'photo_100'}, (r) => {
+                            this.props.sendDataForLogin(r.response[0].first_name, r.response[0].photo_100);  
+                          })
+                        : null
+                        
                      }, window.VK.access.PHOTOS)
                  }}>Привязать VK</Button> 
             </DivForLogInfo> 
@@ -126,8 +130,8 @@ const mapStateToProps = (state) => {
             payload: 'Log in with'
         })
       },
-      sendDataForLogin: (name) => {
-        dispatch(sendDataForLogin(name))
+      sendDataForLogin: (name, avatar) => {
+        dispatch(sendDataForLogin(name, avatar))
       },
       signupStart: () => {
         dispatch({

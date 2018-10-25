@@ -11,9 +11,10 @@ class PhotoList extends Component {
     
 componentDidMount(){
     let photos = JSON.parse(localStorage.getItem('miptagramState'));
-    photos !== undefined && photos !== [] && this.props.photos.length === 0 ? 
+    photos !== undefined && photos !== []  ? 
         this.props.load_localstorage()  
-    : null 
+    : 
+    null 
 }
 
   render() {
@@ -56,7 +57,14 @@ componentDidMount(){
             }
             
         </div>
-    )} else
+    )} else if(this.props.loading === true)
+        {
+            return(
+                <Loading>
+                    <img src={loading} alt="Loading..."/>
+                </Loading>  
+            )
+        } else
     return(<Guide/>)
   }
 }
@@ -78,6 +86,9 @@ const mapDispatchToProps = (dispatch) => {
             let order = localStorage.getItem('miptagramState');
             var photos = JSON.parse(order);
         dispatch(load_localstorage(photos))
+      },
+      make_empty: () =>{
+        dispatch(load_localstorage([]))
       },
       show_Cropper: (k) => {
         dispatch(show_Cropper(k))

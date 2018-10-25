@@ -225,7 +225,7 @@ margin: auto;
 const mapStateToProps = (state) => {
     return{
       photos: state.PhotosInfo.showVk,
-      old_photos: state.PhotosInfo.photos
+      old_photos: state.PhotosInfo.photos ? state.PhotosInfo.photos : []
     }
   };
   

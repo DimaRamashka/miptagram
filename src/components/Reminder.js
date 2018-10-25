@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Button from '@atlaskit/button';
 import {connect}  from 'react-redux';
 import {closeReminder, reminder, sendDataForLogin} from  './actions/logActions';
-import {orderInfo} from './actions/photoActions';
+import {orderInfoRem} from './actions/photoActions';
 
 class Reminder extends Component {
 
@@ -34,7 +34,7 @@ componentWillUpdate(nextProps, nextState) {
               this.props.orderInfo('show')
             }
               else 
-              this.props.reminder('Привяжите VK, чтобы отслеживать заказ');
+              this.props.reminder('Привяжите VK, чтобы отслеживать заказ',this.props.price);
           })
           
           
@@ -137,7 +137,8 @@ const Close = styled.div`
 
 const mapStateToProps = (state) => {
     return{
-      message: state.logInfo.reminder
+      message: state.logInfo.reminder,
+      price: state.order.price
     }
   };
   
@@ -148,7 +149,7 @@ const mapStateToProps = (state) => {
         
       },
       orderInfo: (data) => {
-        dispatch(orderInfo(data))
+        dispatch(orderInfoRem(data))
       },
       reminder: (message) => {
         dispatch(reminder(message))

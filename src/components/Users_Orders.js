@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {connect} from 'react-redux';
 import {show_All_orders} from './actions/orderActions';
 import Parse from 'parse';
+import loading from './images/loading.gif';
 
 class Users_Photos extends Component {
 
@@ -16,6 +17,7 @@ componentDidMount(){
     window.VK.Auth.getLoginStatus((e) => {
         Parse.Cloud.run('getUsersOrders', {id: e.session.mid})
         .then((res) => {
+            console.log(res)
             this.setState({
                 orders: res
             })
@@ -25,22 +27,27 @@ componentDidMount(){
 
     
     render(){
-            console.log(this.state.orders)
-        
         
         return(
             <Shadow>
                 <Main>
-
-                    {this.state.orders.map((order,k) => {
+                    <OrderBox>
+                        <h3> Дата --- Статус </h3>
+                    </OrderBox>
+                    {this.state.orders === [] ?
+                    <Loading>
+                        <img src={loading} alt="Loading..." style={{height: '50%'}}/>
+                    </Loading> 
+                    :
+                    
+                    this.state.orders.map((order,k) => {
                         return(
-                            <div key={k} style={{margin: 'auto'}}>
-                              <h4> {order.createdAt.getUTCDate()}.{order.createdAt.getUTCMonth()}.{order.createdAt.getUTCFullYear()}  --- {order.attributes.status}</h4>
-                                
-                             
-                                </div>
+                            <OrderBox key={k}>
+                              <h4> {order.createdAt.getUTCDate()}.{order.createdAt.getUTCMonth()}.{order.createdAt.getUTCFullYear()}  --- {order.attributes.status}</h4> 
+                            </OrderBox>
                         )
-                    })}
+                    })
+                }
                   <Close onClick={() => {
                       this.props.show_All_orders();
                       this.props.personData(this.props.name, this.props.avatar)}}> <img alt='x' height={'20px'} src='https://dharmamerchantservices.com/wp-content/uploads/2015/04/close.png' /> </Close>    
@@ -64,6 +71,19 @@ const Main = styled.div`
     padding: 15px;
     margin: auto;
     z-index: 121;
+`;
+const Loading = styled.div`
+ 
+    position: relative;
+    margin: auto;
+    height: 50%;
+    width: 50%;
+`;
+const OrderBox = styled.div`
+    position: relative;
+    display: block;
+    margin: auto;
+    border-bottom: 1px solid grey;
 `;
 
 const Shadow = styled.div`

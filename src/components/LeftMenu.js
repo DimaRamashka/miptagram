@@ -39,19 +39,19 @@ class RightMenu extends Component {
     }
 
 
-
   
-  prizeAndQuantity(photos){
+  
+  priceAndQuantity(photos){
     let quantity = photos ? photos.reduce((sum, p) => (+sum + +p.quant), 0) : 0;
     let photoblock = quantity < 5 ? 4: quantity < 10 ? 9: quantity < 13 ? 12: quantity < 17 ? 16: quantity < 21 ? 20: quantity;
-    let prize =(quantity === 0 ? 0 :quantity < 5 ? 100: quantity < 10 ? 180: quantity < 13 ? 250: quantity < 17? 300: quantity < 21? 400: `${quantity*17}`); 
+    let price =(quantity === 0 ? 0 :quantity < 5 ? 100: quantity < 10 ? 180: quantity < 13 ? 250: quantity < 17? 300: quantity < 21? 400: `${quantity*17}`); 
     return(
-        [quantity, prize, photoblock]
+        [quantity, price, photoblock]
     )
   }
   
   render() {
-    let [quantity, prize, photoblock] = this.prizeAndQuantity(this.props.photos);
+    let [quantity, price, photoblock] = this.priceAndQuantity(this.props.photos);
     let dropzonestyle={display: 'inline', fontSize: '15px', verticalAlign: 'middle', width: '140px', height: '30px'}
     return (
       
@@ -71,7 +71,7 @@ class RightMenu extends Component {
       
     <div style={{fontWeight: 'bold',  position: 'relative', margin: 'auto', top: '10px', backgroundColor: 'white', borderRadius: '4px', width: '100%', padding: '0.05px 0', boxShadow : '0 0 2px rgba(0,0,0,0.5)'}}>
       <InternalDiv><span> Количество: {quantity}</span> <div style={{color: 'grey', display: 'inline-block', Position: 'relative'}}>/ {photoblock} </div> </InternalDiv>
-      <InternalDiv> Цена: {prize} руб </InternalDiv>
+      <InternalDiv> Цена: {price} руб </InternalDiv>
     </div>   
       
         <div style={{top: '30px', paddingTop: '30px', position: 'relative', borderTop: '1px solid grey ', borderBottom: '1px solid grey ', zIndex: 5}}>
@@ -107,15 +107,21 @@ class RightMenu extends Component {
         <Mk_Order  onClick={() => {
             this.props.photos.length === 0 ?
             this.props.reminder(
-              'Чтобы сделать заказ, нужно добавить фото'
+              'Чтобы сделать заказ, нужно добавить фото',
+              this.props.price
             ) :
             window.VK.Auth.getLoginStatus(
               (e) => {
               if(e.status !== 'connected'){
-                this.props.reminder('Привяжите VK, чтобы отслеживать заказ');
+                this.props.reminder('Привяжите VK, чтобы отслеживать заказ', this.props.price);
+                this.props.orderInfo('hide', price)
               } else {
-                quantity < photoblock ? this.props.reminder('Вы можете добавить еще '+ `${photoblock-quantity}` +' фото, за те же деньги') :
-                this.props.orderInfo()
+                if(quantity < photoblock) { 
+                  this.props.reminder('Вы можете добавить еще '+ `${photoblock-quantity}` +' фото, за те же деньги',this.props.price);
+                  this.props.orderInfo('hide', price);
+                } else {
+                  this.props.orderInfo('show', price)
+                }
               }})}}> 
           
           <img alt=' ' style={{verticalAlign: 'middle', display: 'inline-block', marginTop: '2px', marginRight:'10px'}} border={'0px'} height={'30px'} src={'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Green_check.svg/600px-Green_check.svg.png'}/>              
@@ -133,7 +139,8 @@ class RightMenu extends Component {
 
 const mapStateToProps = (state) => {
   return{
-    photos: state.PhotosInfo.photos
+    photos: state.PhotosInfo.photos ? state.PhotosInfo.photos : [],
+    price: state.order.price
   }
 };
 
@@ -149,14 +156,14 @@ const mapDispatchToProps = (dispatch) => {
     showLoading: () => {
       dispatch(showLoading())
     },
-    reminder: (message) => {
-      dispatch(reminder(message))
+    reminder: (message, price) => {
+      dispatch(reminder(message, price))
     },
     addPhotofromVK: (photos) => {
       dispatch(addPhotofromVK(photos))
     },
-    orderInfo: () => {
-      dispatch(orderInfo('show'))
+    orderInfo: (action, price) => {
+      dispatch(orderInfo(action, price ))
     },
     sendLogged: (data) => {
       dispatch(sendLogged(data))
@@ -204,7 +211,7 @@ const Mk_Order = styled.div`
   margin-top: 65px;
   margin-bottom: 6px;
   background: rgba(100, 200, 100, 0.4);
-  z-index: 82;
+  z-index: 5;
   :hover{
     cursor: pointer;
     background: rgba(100, 200, 100, 0.8);

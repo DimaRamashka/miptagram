@@ -64,13 +64,19 @@ export function goodbye(){
     }
 };
 
-export function orderInfo(action){
+export function orderInfo(action, price){
     return{
         type: 'order_Info_Panel',
+        payload: action,
+        price: price
+    }
+};
+export function orderInfoRem(action){
+    return{
+        type: 'Rem_order_Info_Panel',
         payload: action
     }
 };
-
 export function show_Cropper(number){
     return{
         type: 'show_Cropper',
