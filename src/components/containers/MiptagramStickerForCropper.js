@@ -20,7 +20,7 @@ class MiptogramSticker extends Component {
     );
   }
 }
-const X = 3;
+const X = 2.6;
 
 const PhotoDiv = styled.div`
   position: relative;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MiptagramPhoto from './containers/MiptagramPhoto.js';
 import MiptagramSticker from './containers/MiptagramSticker.js';
+import MiptagramPhoto10x15 from './containers/MiptagramPhoto10x15.js';
 import {connect} from 'react-redux';
 import {load_localstorage, show_Cropper} from './actions/photoActions'
 import loading from './images/loading.gif';
@@ -31,7 +32,7 @@ componentDidMount(){
             {
             this.props.photos.map((photo, k) => {
                 let key = photo.url + k;
-                if( this.props.photoType === 'photos'){
+                if( this.props.photoType === 'photos1'){
                 return(
                     
                     <div  key={key} onClick={() => {
@@ -43,6 +44,18 @@ componentDidMount(){
                         />
                     </div>
                 )} else
+                if( this.props.photoType === 'photos2'){
+                    return(
+                        
+                        <div  key={key} onClick={() => {
+                            this.props.show_Cropper(k)}}>                         
+                            <MiptagramPhoto10x15 
+                                url={photo.url} x={photo.x} y={photo.y} 
+                                width={photo.width} text={photo.text} 
+                                quant={photo.quant} font={photo.font} orientation={photo.orientation}
+                            />                           
+                        </div>
+                    )} else
                 return(
                     <div  key={key} onClick={() => {
                         this.props.show_Cropper(k)}}> 

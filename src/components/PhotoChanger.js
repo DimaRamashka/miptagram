@@ -5,6 +5,7 @@ import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import MiptagramPhoto from './containers/MiptagramPhotoForCropper.js';
 import MiptagramSticker from './containers/MiptagramStickerForCropper.js';
+import MiptagramPhoto10x15 from './containers/MiptagramPhoto10x15ForCropper.js';
 import {connect} from 'react-redux';
 import {onSavePhoto, onCancelPhoto, onDeletePhoto} from './actions/photoActions'
 
@@ -17,7 +18,9 @@ state={
     y: this.props.photos[this.props.photoNumber].y,
     quant: this.props.photos[this.props.photoNumber].quant,
     width: this.props.photos[this.props.photoNumber].width,
-    font: this.props.photos[this.props.photoNumber].font
+    height: this.props.photos[this.props.photoNumber].height,
+    font: this.props.photos[this.props.photoNumber].font,
+    orientation: 0
 }    
 
   render() {
@@ -28,8 +31,11 @@ state={
       let y = this.state.y;
       let quant = this.state.quant;
       let width = this.state.width;
+      let height = this.state.height;
       let font = this.state.font;
+      let orientation = this.state.orientation;
       let photoNumber = this.props.photoNumber;
+      let aspect = this.props.photoType === 'photos2' ? this.state.orientation % 2 !== 0 ? 10/15 : 15/10 : 1/1 ;
     return (
         
         <div>
@@ -38,21 +44,28 @@ state={
                   <Cropper 
                     ref={r => this.cropper = r }                   
                     src={url} 
-                    aspectRatio={1/ 1} 
+                    aspectRatio={aspect} 
                     guides={false}
                     zoomable={false} 
-                    viewMode={1}   
+                    viewMode={1} 
+                    rotatable={true}  
                     movable={false}
                     style={{width: '96%', height: '88%', margin: 'auto', top: '6%', position: 'relative'}}
                     crop={(e) => {
                         let data = this.cropper.getCropBoxData();
                         let data2 = this.cropper.getCanvasData();
                         let canv = this.cropper.getImageData();
+                        // console.log((data.left-data2.left)/data.width*100,
+                        //     (data.top-data2.top)/data.height*150,
+                        //     canv.width/data.width*100,
+                        //     canv.height/data.height*150
+                        // );
                         this.setState(
                         {
                             x: (data.left-data2.left)/data.width ,
-                            y: (data.top-data2.top)/data.width ,
-                            width: canv.width/data.width
+                            y: (data.top-data2.top)/data.height ,
+                            width: canv.width/data.width,
+                            height: canv.height/data.height
                         });
                         
                     }}           
@@ -68,9 +81,11 @@ state={
                     x: this.state.x,
                     y: this.state.y,
                     width: this.state.width,
+                    height: this.state.height,
                     text: this.state.text,
                     quant: this.state.quant,
-                    font: this.state.font
+                    font: this.state.font,
+                    orientation: this.state.orientation
                 }
                 let newPhotos = photos.filter((p,k) => (k !== photoNumber)).reverse().concat(newPhoto);
                 this.props.onSavePhoto(newPhotos.reverse())
@@ -83,11 +98,19 @@ state={
                  this.props.onSavePhoto(newPhotos)}
                  }> Delete </Button> </ForButton>
              </ForText>
-            { this.props.photoType === 'photos' ?
-             <MiptagramPhoto url={url} x={x} y={y} width={width} text={text} font={font} quant={quant}/>
-             : <MiptagramSticker url={url} x={x} y={y} width={width} text={text} font={font} quant={quant}/>
+            { this.props.photoType === 'photos1' ?
+             <MiptagramPhoto url={url} x={x} y={y} width={width} text={text} height={height} font={font} quant={quant}/>
+             : this.props.photoType === 'photos2' ?
+             <MiptagramPhoto10x15 url={url} x={x} y={y} width={width} height={height} orientation={orientation} text={text} font={font} quant={quant}/>
+             : <MiptagramSticker url={url} x={x} y={y} width={width} height={height} text={text} font={font} quant={quant}/>
             }
-            
+            {this.props.photoType === 'photos2' ?
+            <button onClick={() => {
+                this.setState({
+                    orientation: this.state.orientation + 1
+                })
+            }}> Rotate </button>
+            : null }
              
              <ForText>
                  Текст под фото:

@@ -1,5 +1,5 @@
 const photoChangeReducer = (
-    state={photos: [], photoNumber: undefined, photoType: 'photos', showVk: false, creating_order: 'none'}, action) => {
+    state={photos: [], photoNumber: undefined, photoType: 'photos1', showVk: false, creating_order: 'none'}, action) => {
     switch (action.type){
         case 'load_order': state={
             ...state,

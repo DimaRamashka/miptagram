@@ -15,29 +15,21 @@ class RightMenu extends Component {
     return (
       
         <RightPart>
-        { this.props.photoType === 'photos' ?
         <div>
-        <SpanInBut style={style_Photos_Or_Stickers}>
+        <SpanInBut style={this.props.photoType === 'photos1' ? style_Photos_Or_Stickers : {}} onClick={() => {this.props.change_photo_type('photos1')}}>
           <img alt=' ' style={{verticalAlign: 'middle', display: 'inline-block', marginTop: '2px', marginRight:'8px'}} border={'0px'} height={'30px'} src={'https://cdn3.iconfinder.com/data/icons/audiovisual-production-outlined-pixel-perfect/64/vp-07-512.png'}/> 
           {'   '} Фото 100 x 117 
         </SpanInBut>
-        <SpanInBut onClick={() => {this.props.change_photo_type('stickers')}}> 
+        <SpanInBut style={this.props.photoType === 'photos2' ? style_Photos_Or_Stickers : {}} onClick={() => {this.props.change_photo_type('photos2')}}>
+          <img alt=' ' style={{verticalAlign: 'middle', display: 'inline-block', marginTop: '2px', marginRight:'8px'}} border={'0px'} width={'30px'} src={'https://cdn2.iconfinder.com/data/icons/picons-essentials/71/gallery-512.png'}/> 
+          {'   '} Фото 10 x 15
+        </SpanInBut>
+        <SpanInBut style={this.props.photoType === 'stickers' ? style_Photos_Or_Stickers : {}} onClick={() => {this.props.change_photo_type('stickers')}}>
         <img alt=' ' style={{verticalAlign: 'middle', display: 'inline-block', marginTop: '2px', marginRight:'8px'}} border={'0px'} height={'30px'} src={'https://cdn3.iconfinder.com/data/icons/e-commerce-trading/512/stickers-512.png'}/> 
          {'   '} Стикеры 6 x 6
         </SpanInBut>
         </div>
-        :
-        <div>
-          <SpanInBut onClick={() => {this.props.change_photo_type('photos')}}>
-            <img alt=' ' style={{verticalAlign: 'middle', display: 'inline-block', marginTop: '2px', marginRight:'8px'}} border={'0px'} height={'30px'} src={'https://cdn3.iconfinder.com/data/icons/audiovisual-production-outlined-pixel-perfect/64/vp-07-512.png'}/> 
-            {'   '} Фото 100 x 117 
-          </SpanInBut>
-          <SpanInBut style={style_Photos_Or_Stickers}> 
-            <img alt=' ' style={{verticalAlign: 'middle', display: 'inline-block', marginTop: '2px', marginRight:'8px'}} border={'0px'} height={'30px'} src={'https://cdn3.iconfinder.com/data/icons/e-commerce-trading/512/stickers-512.png'}/> 
-            {'   '} Стикеры 6 x 6
-          </SpanInBut>
-        </div>
-        }
+        
       </RightPart>
      
    
